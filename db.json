@@ -1,0 +1,191 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "username": "Apple",
+      "email": "app123@gmail.com",
+      "phone": 9846326545,
+      "description": "My name is Apple, I am 32 years old, living in New York."
+    },
+    {
+      "id": 2,
+      "username": "Mango",
+      "email": "mango55@gmail.com",
+      "phone": 9846315820,
+      "description": "My name is Mango, I am 15 years old, living in London."
+    },
+    {
+      "id": 3,
+      "username": "Banana",
+      "email": "ban99@gmail.com",
+      "phone": 9846310000,
+      "description": "My name is Banana, I am 50 years old, living in Columbia."
+    },
+    {
+      "username": "Potato",
+      "email": "potato@gmail.com",
+      "phone": "9846256152",
+      "id": 4,
+      "description": "My name is Potato, I am 21 years old, living in Ireland."
+    },
+    {
+      "username": "Man",
+      "email": "man@gmai.com",
+      "phone": "98555",
+      "id": 5
+    }
+  ],
+  "accounts": [
+    {
+      "id": 1,
+      "name": "Silver Blue",
+      "url": "https://slverblu.com",
+      "owner": "Maomao Zhou",
+      "type": "private",
+      "approver": "Jack Ma",
+      "dateTime": [
+        "2020-07-10T14:44:26.526Z",
+        "2031-08-20T14:44:26.526Z"
+      ],
+      "description": "This is the description."
+    },
+    {
+      "name": "asdadsadsads",
+      "url": "abcd",
+      "owner": "xiao",
+      "type": "public",
+      "approver": "tom",
+      "dateTime": [
+        "2018-07-10T14:44:26.526Z",
+        "2021-08-20T14:44:26.526Z"
+      ],
+      "description": "sdsdsdsdsdsdsdsd",
+      "id": 2
+    },
+    {
+      "name": "tytytytytytytyyty",
+      "url": "tytytytytyty",
+      "owner": "mao",
+      "type": "public",
+      "approver": "jack",
+      "dateTime": [
+        "2019-07-17T15:17:31.808Z",
+        "2025-09-24T15:17:31.808Z"
+      ],
+      "description": "tytytytytytytytytyty",
+      "id": 3
+    },
+    {
+      "name": "opopopo",
+      "url": "popopop",
+      "owner": "mao",
+      "type": "public",
+      "approver": "jack",
+      "dateTime": [
+        "2021-07-09T15:21:21.881Z",
+        "2024-08-23T15:21:21.881Z"
+      ],
+      "description": "opopopopopopopop",
+      "id": 4
+    }
+  ],
+  "types": [
+    {
+      "value": "text",
+      "text": "Text"
+    },
+    {
+      "value": "email",
+      "text": "Email"
+    },
+    {
+      "value": "number",
+      "text": "Number"
+    },
+    {
+      "value": "textarea",
+      "text": "Text Area"
+    },
+    {
+      "value": "options",
+      "text": "Options"
+    },
+    {
+      "value": "upload",
+      "text": "Upload"
+    },
+    {
+      "value": "date-picker",
+      "text": "Date Picker"
+    },
+    {
+      "value": "time-picker",
+      "text": "Time Picker"
+    },
+    {
+      "value": "date-time-picker",
+      "text": "Date Time Picker"
+    },
+    {
+      "value": "range-picker",
+      "text": "Range Picker"
+    },
+    {
+      "value": "range-time-picker",
+      "text": "Range Time Picker"
+    }
+  ],
+  "form-set-1": [
+    {
+      "id": 1,
+      "name": "name",
+      "label": "Name",
+      "required": true,
+      "type": "text"
+    },
+    {
+      "id": 2,
+      "name": "email",
+      "label": "Email",
+      "required": false,
+      "type": "email"
+    },
+    {
+      "id": 3,
+      "name": "age",
+      "label": "Age",
+      "required": false,
+      "type": "number",
+      "min": 0,
+      "max": 99
+    },
+    {
+      "id": 4,
+      "name": "type",
+      "label": "Type",
+      "required": true,
+      "type": "options"
+    },
+    {
+      "id": 5,
+      "name": "description",
+      "label": "Description",
+      "required": false,
+      "type": "textarea",
+      "maxlength": 100
+    },
+    {
+      "name": "range-picker",
+      "label": "Range Picker",
+      "type": "range-picker",
+      "id": 6
+    },
+    {
+      "name": "range-time-picker",
+      "label": "Range Time Picker",
+      "type": "range-time-picker",
+      "id": 7
+    }
+  ],
+  "upload": []
+}
