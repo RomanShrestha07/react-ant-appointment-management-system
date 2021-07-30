@@ -1,14 +1,31 @@
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import {Button, Card, Col, DatePicker, Divider, Drawer, Form, Input, Row, TimePicker} from "antd";
 import moment from "moment";
 import Select from 'react-select'
 
-const AddAppointment = ({doctorOptions, patientOptions, selectedDate, drawerState, onAddAppointment, closeDrawer}) => {
-    const [momentObj, setMomentObj] = useState(moment(selectedDate))
+const AddAppointment = ({
+                            doctorOptions,
+                            patientOptions,
+                            selectedDate,
+                            drawerState,
+                            editDrawerState,
+                            onAddAppointment,
+                            onEditAppointment,
+                            closeDrawer,
+                            editValues
+                        }) => {
+    const [momentObj, setMomentObj] = useState({})
     const [existing, setExisting] = useState(true)
     const [form] = Form.useForm();
+    const [editForm] = Form.useForm();
 
-    // console.log('the selected date: ', selectedDate)
+    useEffect(() => {
+        const getUsers = async () => {
+            console.log('the selected date: ', selectedDate)
+            setMomentObj(moment(selectedDate))
+        }
+        getUsers().then(r => console.log(r, 'Hello3'))
+    }, [])
 
     const existingPatient = () => {
         setExisting(true)
@@ -79,11 +96,29 @@ const AddAppointment = ({doctorOptions, patientOptions, selectedDate, drawerStat
     }
 
     let initial = {
-        date: momentObj
+        date: momentObj,
+        duration: moment('15:00', 'HH:mm')
     }
+
+    // console.log('initial', momentObj)
 
     if (drawerState === false) {
         form.resetFields()
+        editForm.resetFields()
+    }
+
+    if (editValues.doctor) {
+        editForm.setFieldsValue({
+            doctor: {value: 1, label: `${editValues.doctor}`},
+            patient: {
+                value: 1,
+                label: `${editValues.patient.first_name} ${editValues.patient.last_name}, ${editValues.patient.phone_number}`
+            },
+            date: moment(`${editValues.date}`, 'YYYY-MM-DD'),
+            time: moment(`${editValues.time}`, 'HH:mm'),
+            duration: moment(`${editValues.duration}`, 'HH:mm'),
+            remarks: `${editValues.remarks}`
+        });
     }
 
     return (
@@ -91,7 +126,6 @@ const AddAppointment = ({doctorOptions, patientOptions, selectedDate, drawerStat
             <Drawer
                 title="Add Appointment"
                 width={560}
-                form={form}
                 onClose={closeDrawer}
                 visible={drawerState}
             >
@@ -167,6 +201,93 @@ const AddAppointment = ({doctorOptions, patientOptions, selectedDate, drawerStat
                                 </Button>
                                 <Button htmlType="submit" type="primary">
                                     Add Appointment
+                                </Button>
+                            </div>
+                        </Col>
+                    </Row>
+                    <Divider/>
+                </Form>
+            </Drawer>
+
+            <Drawer
+                title="Edit Appointment"
+                width={560}
+                form={editForm}
+                onClose={closeDrawer}
+                visible={editDrawerState}
+            >
+                <Card style={{marginBottom: 24}}>
+                    <PatientButtons/>
+                </Card>
+
+                <Form
+                    hideRequiredMark
+                    layout="vertical"
+                    form={editForm}
+                    onFinish={onEditAppointment}
+                    initialValues={initial}
+                >
+                    <LoadForNewPatient/>
+
+                    <Row gutter={16}>
+                        <Col span={12}>
+                            <Form.Item name="doctor" label="Doctor"
+                                       rules={[{required: true, message: 'Please select a doctor'}]}>
+
+                                <Select options={doctorOptions} placeholder='Select Doctor' isDisabled={true}/>
+                            </Form.Item>
+
+                        </Col>
+
+                        <Col span={12}>
+                            <Form.Item name="patient" label="Patient"
+                                       rules={[{required: true, message: 'Please select a patient'}]}>
+                                <Select options={patientOptions} placeholder='Select Patient' isDisabled={true}/>
+                            </Form.Item>
+                        </Col>
+                    </Row>
+
+                    <Row gutter={16}>
+                        <Col span={7}>
+                            <Form.Item name="date" label="Date"
+                                       rules={[{required: true, message: 'Please set the date'}]}>
+                                <DatePicker placeholder='Select Date' format='YYYY-MM-DD'/>
+                            </Form.Item>
+                        </Col>
+
+                        <Col span={9}>
+                            <Form.Item name="time" label="Time"
+                                       rules={[{required: true, message: 'Please set the time'}]}>
+                                <TimePicker format='HH:mm' style={{width: '100%'}}/>
+                            </Form.Item>
+                        </Col>
+
+                        <Col span={8}>
+                            <Form.Item name="duration" label="Duration"
+                                       rules={[{required: true, message: 'Please set the duration'}]}>
+                                <TimePicker format='HH:mm' style={{width: '100%'}}/>
+                            </Form.Item>
+                        </Col>
+                    </Row>
+
+                    <Row gutter={16}>
+                        <Col span={24}>
+                            <Form.Item name="remarks" label="Remarks">
+                                <Input.TextArea/>
+                            </Form.Item>
+                        </Col>
+                    </Row>
+
+                    <Divider/>
+
+                    <Row gutter={16}>
+                        <Col span={24}>
+                            <div style={{textAlign: 'right',}}>
+                                <Button onClick={closeDrawer} style={{marginRight: 8}}>
+                                    Cancel
+                                </Button>
+                                <Button htmlType="submit" type="primary">
+                                    Edit Appointment
                                 </Button>
                             </div>
                         </Col>

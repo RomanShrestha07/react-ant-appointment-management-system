@@ -17,25 +17,15 @@ const Appointments = () => {
     const [appointments, setAppointments] = useState([])
     const [events, setEvents] = useState([])
     const [drawerState, setDrawerState] = useState(false)
-    const [selectedDate, setSelectedDate] = useState(getDateToday())
+    const [editDrawerState, setEditDrawerState] = useState(false)
+    const [selectedDate, setSelectedDate] = useState(getDateToday)
+    const [editValues, setEditValues] = useState({})
+    const [editID, setEditID] = useState('')
 
     const APIURL = 'http://144.91.93.161:8004/api/desktop'
 
-    function getDateToday() {
-        const today = new Date();
-        const year = today.getFullYear().toString();
-        let month = (today.getMonth() + 1).toString();
-        let day = today.getDate().toString()
-
-        if (month.length === 1) {
-            month = "0" + month;
-        }
-
-        return year + '-' + month + '-' + day;
-    }
-
     useEffect(() => {
-        const getUsers = async () => {
+        const getEverything = async () => {
             const doctorsFromServer = await fetchDoctors()
             const doctorOptionsFromServer = await fetchDoctorOptions()
             const patientsFromServer = await fetchPatients()
@@ -49,8 +39,21 @@ const Appointments = () => {
             setAppointments(appointmentsFromServer)
             setEvents(processedEvents)
         }
-        getUsers().then(r => console.log(r, 'Hello2'))
+        getEverything().then(r => console.log(r, 'Hello2'))
     }, [])
+
+    function getDateToday() {
+        const today = new Date();
+        const year = today.getFullYear().toString();
+        let month = (today.getMonth() + 1).toString();
+        let day = today.getDate().toString()
+
+        if (month.length === 1) {
+            month = "0" + month;
+        }
+
+        return year + '-' + month + '-' + day;
+    }
 
     const fetchDoctors = async () => {
         const response = await fetch(`${APIURL}/list-doctors/`, {
@@ -192,24 +195,28 @@ const Appointments = () => {
         doctor_options.push({value: doctor.id, label: `Dr. ${doctor.first_name} ${doctor.last_name}`})
     })
 
-    const openDrawer = () => {
-        setDrawerState(true)
-    }
-
-    const closeDrawer = () => {
-        setDrawerState(false)
+    const handleDateClick = (value) => {
+        console.log('Selected Date:', value.dateStr)
+        setSelectedDate(value.dateStr)
+        console.log('selected date', selectedDate)
+        openDrawer()
     }
 
     const filterByDoctor = (value) => {
         console.log('Doctor: ', value)
     }
 
-    const handleDateClick = (value) => {
-        console.log('Selected Date:', value.dateStr)
-        // setMomentObj(moment(value.dateStr, 'YYYY-MM-DD'))
-        // console.log('Date Obj:', momentObj)
-        setSelectedDate(value.dateStr)
-        openDrawer()
+    const openDrawer = () => {
+        setDrawerState(true)
+    }
+
+    const openEditDrawer = () => {
+        setEditDrawerState(true)
+    }
+
+    const closeDrawer = () => {
+        setDrawerState(false)
+        setEditDrawerState(false)
     }
 
     const handleAddAppointment = async (values) => {
@@ -275,6 +282,55 @@ const Appointments = () => {
         })
         const data = await response.json()
         console.log('Selected Appointment:', data)
+        setEditValues(data)
+        setEditID(ID)
+        openEditDrawer()
+    }
+
+    const handleEditAppointment = async (values) => {
+        console.log('Edit Appointment:', values)
+        const ID = editID
+
+        const editedAppointment = {
+            id: editID,
+            date: values['date'].format('YYYY-MM-DD'),
+            time: values['time'].format('HH:mm'),
+            duration: values['duration'].format('HH:mm'),
+            remarks: values['remarks']
+        }
+
+        console.log('Edited Appointment:', editedAppointment)
+
+        const response = await fetch(`${APIURL}/appointment/${ID}`, {
+            method: 'PATCH',
+            mode: 'cors',
+            headers: {
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify(editedAppointment)
+        })
+        const data = await response.json()
+
+        console.log('Edited Appointment 2:', data)
+        console.log('Edit Appointment Response Status - ', response.status)
+
+        if (response.status === 200) {
+            message.success(`Edited Appointment: ${editedAppointment ? `For ${data.patient.first_name} ${data.patient.last_name}, To ${editedAppointment.date} at ${editedAppointment.time}` : 'Error'}`);
+            closeDrawer()
+        } else {
+            message.error(`An error has occurred. Error Status: ${response.status}`);
+        }
+
+        let start = data.date + 'T' + data.time
+        let duration = moment.duration(data.duration)
+        let end = moment(data.date + 'T' + data.time).add(duration).format().split("+")[0]
+
+        setEvents(
+            events.map((event) => event.id === data.id ? {...event, start: start} : event),
+            events.map((event) => event.id === data.id ? {...event, end: end} : event)
+        )
+
+        setEditID('')
     }
 
     return (
@@ -305,6 +361,8 @@ const Appointments = () => {
                 dateClick={handleDateClick}
                 events={events}
                 eventClick={handleEventClick}
+                dayMaxEvents={2}
+                navLinks={true}
             />
 
             <AddAppointment
@@ -314,9 +372,12 @@ const Appointments = () => {
                 patientOptions={patientOptions}
                 appointments={appointments}
                 drawerState={drawerState}
+                editDrawerState={editDrawerState}
                 onAddAppointment={handleAddAppointment}
+                onEditAppointment={handleEditAppointment}
                 closeDrawer={closeDrawer}
                 selectedDate={selectedDate}
+                editValues={editValues}
             />
 
         </Card>
