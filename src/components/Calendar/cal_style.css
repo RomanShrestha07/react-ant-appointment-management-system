@@ -1,0 +1,54 @@
+/*!* override day title color and size *!*/
+/*.fc-col-header-cell-cushion {*/
+/*    font-size: 1.5em;*/
+/*    color: #377BBF;*/
+/*}*/
+
+.fc .fc-daygrid-day.fc-day-today {
+    background-color: #bfd8ff;
+}
+
+.fc-day-sat {
+    background-color: #bfd8ff4f;
+}
+
+.fc .fc-button-primary {
+    color: #fff;
+    background-color: #40a9ff;
+    border-color: #40a9ff;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.12);
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.045);
+    line-height: 1.5715;
+    position: relative;
+    display: inline-block;
+    font-weight: 400;
+    white-space: nowrap;
+    text-align: center;
+    background-image: none;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
+    height: 32px;
+    padding: 4px 15px;
+    font-size: 14px;
+    border-radius: 2px;
+}
+
+.fc .fc-button-primary:hover {
+    background-color: #096dd9;
+    border-color: #096dd9;
+}
+
+.fc .fc-button-primary:disabled {
+    background-color: #096dd9;
+    border-color: #096dd9; /*#1F4973*/
+}
+
+.fc .fc-button-primary:not(:disabled):active, .fc .fc-button-primary:not(:disabled).fc-button-active {
+    background-color: #096dd9;
+    border-color: #096dd9;
+}

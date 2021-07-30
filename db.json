@@ -187,5 +187,185 @@
       "id": 7
     }
   ],
-  "upload": []
+  "upload": [],
+  "products": [
+    {
+      "id": 1,
+      "name": "Asus Zephyrus",
+      "type": "Laptop",
+      "price": 1200,
+      "description": "The best of ASUS."
+    },
+    {
+      "id": 2,
+      "name": "Lenovo Legion",
+      "type": "Laptop",
+      "price": 2000,
+      "description": "The best of Lenovo."
+    },
+    {
+      "id": 3,
+      "name": "Apple Macbook",
+      "type": "Laptop",
+      "price": 3100,
+      "description": "The best Mac."
+    },
+    {
+      "id": 4,
+      "name": "Samsung Galaxy",
+      "type": "Phone",
+      "price": 1200,
+      "description": "The best Galaxy."
+    },
+    {
+      "id": 5,
+      "name": "Apple iPhone",
+      "type": "Phone",
+      "price": 1000,
+      "description": "The best iPhone."
+    },
+    {
+      "name": "Samsung Smart TV",
+      "price": 5000,
+      "type": "TV",
+      "description": "best TVs",
+      "height": 25,
+      "width": 30,
+      "resolution": "@1080x720",
+      "id": 6
+    },
+    {
+      "name": "Big Apple",
+      "price": 50,
+      "type": "Apple",
+      "description": "its very juicy",
+      "color": "Red",
+      "id": 7
+    }
+  ],
+  "product-types": [
+    {
+      "id": 1,
+      "name": "Laptop",
+      "description": "The best laptops.",
+      "required": true,
+      "attributes": [
+        {
+          "attribute_name": "height",
+          "attribute_label": "Height",
+          "attribute_type": "number"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Phone",
+      "description": "The best phones.",
+      "required": false,
+      "attributes": [
+        {
+          "attribute_name": "height",
+          "attribute_label": "Height",
+          "attribute_type": "number"
+        },
+        {
+          "attribute_name": "width",
+          "attribute_label": "Width",
+          "attribute_type": "number"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Television",
+      "description": "The best TV.",
+      "required": true,
+      "attributes": [
+        {
+          "attribute_name": "height",
+          "attribute_label": "Height",
+          "attribute_type": "number"
+        },
+        {
+          "attribute_name": "width",
+          "attribute_label": "Width",
+          "attribute_type": "number"
+        },
+        {
+          "attribute_name": "breadth",
+          "attribute_label": "Breadth",
+          "attribute_type": "number"
+        }
+      ]
+    },
+    {
+      "name": "TV",
+      "description": "best TV",
+      "attributes": [
+        {
+          "attribute_name": "height",
+          "attribute_label": "Height",
+          "attribute_type": "number"
+        },
+        {
+          "attribute_name": "width",
+          "attribute_label": "Width",
+          "attribute_type": "number"
+        },
+        {
+          "attribute_name": "resolution",
+          "attribute_label": "Resolution",
+          "attribute_type": "text"
+        }
+      ],
+      "id": 4
+    },
+    {
+      "name": "Apple",
+      "description": "yummy",
+      "attributes": [
+        {
+          "attribute_name": "color",
+          "attribute_label": "Color",
+          "attribute_type": "text"
+        }
+      ],
+      "id": 5
+    }
+  ],
+  "attributes": [],
+  "events": [
+    {
+      "date": "2021-07-01",
+      "type": "warning",
+      "title": "Warning Event.",
+      "description": "This is a warning event."
+    },
+    {
+      "date": "2021-07-02",
+      "type": "success",
+      "title": "Success Event.",
+      "description": "This is a success event."
+    }
+  ],
+  "appointments": [
+    {
+      "date": "2021-07-28",
+      "time": "07:00",
+      "duration": "00:35",
+      "patient": "100",
+      "doctor": "1",
+      "remarks": "blue",
+      "id": 1
+    },
+    {
+      "date": "2021-07-29",
+      "time": "02:00",
+      "duration": "05:05",
+      "patient": 2,
+      "doctor": 1,
+      "remarks": "asdads",
+      "id": 2
+    }
+  ]
 }

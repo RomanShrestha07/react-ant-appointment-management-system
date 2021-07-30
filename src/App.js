@@ -2,14 +2,18 @@ import './App.css';
 import {useEffect, useState} from "react";
 import {BrowserRouter as Router, Link, Route, Switch, withRouter} from "react-router-dom";
 import Sidebar from "./components/Sidebar";
-// import Navbar from "./components/Navbar";
 import Home from './components/Home';
 import About from "./components/About";
 import Users from "./components/Users/Users";
 import Accounts from "./components/Accounts/Accounts";
+import Products from "./components/Products/Products";
+import ProductTypes from "./components/Products/ProductTypes";
 import DynamicForm from "./components/DynamicForm/DynamicForm";
 import DynamicFormTest from "./components/DynamicForm/DynamicFormTest";
 import DynamicFormTest2 from "./components/DynamicForm/DynamicFormTest2";
+import MyCalendar from "./components/Calendar/MyCalendar";
+import MyFullCalendar from "./components/Calendar/MyFullCalendar";
+import Appointments from "./components/Appointments/Appointments";
 import {message, Layout, Breadcrumb, BackTop} from "antd";
 import {AntDesignOutlined, ArrowUpOutlined} from '@ant-design/icons';
 
@@ -18,13 +22,20 @@ const {Header, Content, Footer} = Layout;
 function App() {
     const [users, setUsers] = useState([])
     const [accounts, setAccounts] = useState([])
+    const [products, setProducts] = useState([])
+    const [productTypes, setProductTypes] = useState([])
+    const [attributes, setAttributes] = useState([])
 
     useEffect(() => {
         const getUsers = async () => {
             const usersFromServer = await fetchUsers()
             const accountsFromServer = await fetchAccounts()
+            const productsFormServer = await fetchProducts()
+            const productTypesFormServer = await fetchProductTypes()
             setUsers(usersFromServer)
             setAccounts(accountsFromServer)
+            setProducts(productsFormServer)
+            setProductTypes(productTypesFormServer)
         }
         getUsers().then(r => console.log(r, 'Hello'))
     }, [])
@@ -32,16 +43,29 @@ function App() {
     const fetchUsers = async () => {
         const response = await fetch('http://localhost:5000/users/')
         const data = await response.json()
-        console.log(data)
+        console.log('Users:', data)
         return data
     }
 
     const fetchAccounts = async () => {
         const response = await fetch('http://localhost:5000/accounts/')
         const data = await response.json()
-        console.log(data)
-
+        // console.log('Accounts', data)
         return fixAccountsDate(data)
+    }
+
+    const fetchProducts = async () => {
+        const response = await fetch('http://localhost:5000/products/')
+        const data = await response.json()
+        console.log('Products:', data)
+        return data
+    }
+
+    const fetchProductTypes = async () => {
+        const response = await fetch('http://localhost:5000/product-types/')
+        const data = await response.json()
+        console.log('Product Types', data)
+        return data
     }
 
     const fixAccountsDate = (data) => {
@@ -166,20 +190,25 @@ function App() {
         '/about': 'About',
         '/users': 'Users',
         '/accounts': 'Accounts',
+        '/products': 'Products',
+        '/products/product-types': 'Product Types',
         '/dynamic-form': 'Forms',
         '/dynamic-form/1': 'Form 1',
         '/dynamic-form/2': 'Form 2',
         '/dynamic-form/3': 'Form 3',
+        '/calendar': 'Calendar',
+        '/fullcalendar': 'Full Calendar',
+        '/appointments': 'Appointments'
     };
 
     const Bread = withRouter(props => {
         const {location} = props;
         const pathSnippets = location.pathname.split('/').filter(i => i);
-        console.log('pathSnippets:', pathSnippets)
+        // console.log('pathSnippets:', pathSnippets)
 
         const extraBreadcrumbItems = pathSnippets.map((_, index) => {
             const url = `/${pathSnippets.slice(0, index + 1).join('/')}`;
-            console.log('url:', url)
+            // console.log('url:', url)
             return (
                 <Breadcrumb.Item key={url}>
                     <Link to={url}>{breadcrumbNameMap[url]}</Link>
@@ -213,6 +242,94 @@ function App() {
         fontSize: 14,
     };
 
+    const handleAddProduct = async (newProduct) => {
+        console.log('Added Product - ', newProduct);
+
+        const response = await fetch('http://localhost:5000/products/', {
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify(newProduct)
+        })
+
+        const data = await response.json()
+        console.log('Added Product 2 - ', data)
+        console.log('Add Product Response Status - ', response.status)
+
+        if (response.status === 201) {
+            message.success(`Added Product Type: ${newProduct ? newProduct.name : 'Error'}`);
+        } else {
+            message.error(`An error has occurred. Error Status: ${response.status}`);
+        }
+
+        setProducts([...products, data])
+    }
+
+    const handleAddProductType = async (newProductType) => {
+        console.log('Added Product Type - ', newProductType);
+
+        const response = await fetch('http://localhost:5000/product-types/', {
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify(newProductType)
+        })
+
+        const data = await response.json()
+        console.log('Added Product Type 2 - ', data)
+        console.log('Add Product Type Response Status - ', response.status)
+
+        if (response.status === 201) {
+            message.success(`Added Product Type: ${newProductType ? newProductType.name : 'Error'}`);
+        } else {
+            message.error(`An error has occurred. Error Status: ${response.status}`);
+        }
+
+        setProductTypes([...productTypes, data])
+
+        const attr_response = await fetch('http://localhost:5000/attributes/')
+        const attr_data = await attr_response.json()
+        console.log('Attributes: ', attr_data)
+
+        attr_data.map(
+            attr => (
+                fetch(`http://localhost:5000/attributes/${attr.id}/`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-type': 'application/json'
+                    }
+                })
+            )
+        )
+        setAttributes([])
+    }
+
+    const handleAddAttribute = async (newAttribute) => {
+        console.log('Added Attribute - ', newAttribute);
+
+        const response = await fetch('http://localhost:5000/attributes/', {
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify(newAttribute)
+        })
+
+        const data = await response.json()
+        console.log('Added Attribute 2 - ', data)
+        console.log('Add Attribute Response Status - ', response.status)
+
+        if (response.status === 201) {
+            message.success(`Added Attribute: ${newAttribute ? newAttribute.label : 'Error'}`);
+        } else {
+            message.error(`An error has occurred. Error Status: ${response.status}`);
+        }
+
+        setAttributes([...attributes, data])
+    }
+
     return (
         <div>
             <Router>
@@ -229,13 +346,6 @@ function App() {
                         <Sidebar/>
 
                         <Layout style={{padding: '0 24px 24px'}}>
-
-                            {/*<Breadcrumb style={{margin: '16px 0'}}>*/}
-                            {/*    <Breadcrumb.Item>React</Breadcrumb.Item>*/}
-                            {/*    <Breadcrumb.Item>Ant</Breadcrumb.Item>*/}
-                            {/*    <Breadcrumb.Item>Home</Breadcrumb.Item>*/}
-                            {/*</Breadcrumb>*/}
-
                             <Bread/>
 
                             <Content style={{padding: 24, margin: 0, minHeight: 280,}}>
@@ -254,11 +364,35 @@ function App() {
                                                   onAddAccount={handleAccountAdd}/>
                                     </Route>
 
+                                    <Route path="/products" exact>
+                                        <Products
+                                            products={products}
+                                            productTypes={productTypes}
+                                            onAddProduct={handleAddProduct}
+                                        />
+                                    </Route>
+
+                                    <Route path="/products/product-types" exact>
+                                        <ProductTypes productTypes={productTypes}
+                                                      onAddProductType={handleAddProductType}
+                                                      onAddAttribute={handleAddAttribute}
+                                                      attributes={attributes}
+                                        />
+                                    </Route>
+
                                     <Route path="/dynamic-form/1" component={DynamicForm}/>
 
                                     <Route path="/dynamic-form/2" component={DynamicFormTest}/>
 
                                     <Route path="/dynamic-form/3" component={DynamicFormTest2}/>
+
+                                    <Route path="/calendar" component={MyCalendar}/>
+
+                                    <Route path="/fullcalendar" component={MyFullCalendar}/>
+
+                                    <Route path="/appointments">
+                                        <Appointments/>
+                                    </Route>
                                 </Switch>
                             </Content>
 
