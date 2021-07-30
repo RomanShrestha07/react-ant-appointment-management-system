@@ -3,33 +3,12 @@ import {Button, Card, Col, DatePicker, Divider, Drawer, Form, Input, Row, TimePi
 import moment from "moment";
 import Select from 'react-select'
 
-const AddAppointment = ({
-                            doctorOptions,
-                            patientOptions,
-                            appointments,
-                            selectedDate,
-                            drawerState,
-                            onAddAppointment,
-                            closeDrawer
-                        }) => {
-    const [momentObj, setMomentObj] = useState(moment(getDateToday()))
+const AddAppointment = ({doctorOptions, patientOptions, selectedDate, drawerState, onAddAppointment, closeDrawer}) => {
+    const [momentObj, setMomentObj] = useState(moment(selectedDate))
     const [existing, setExisting] = useState(true)
     const [form] = Form.useForm();
 
     // console.log('the selected date: ', selectedDate)
-
-    function getDateToday() {
-        const today = new Date();
-        const year = today.getFullYear().toString();
-        let month = (today.getMonth() + 1).toString();
-        let day = today.getDate().toString()
-
-        if (month.length === 1) {
-            month = "0" + month;
-        }
-
-        return year + '-' + month + '-' + day;
-    }
 
     const existingPatient = () => {
         setExisting(true)

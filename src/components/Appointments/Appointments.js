@@ -17,9 +17,22 @@ const Appointments = () => {
     const [appointments, setAppointments] = useState([])
     const [events, setEvents] = useState([])
     const [drawerState, setDrawerState] = useState(false)
-    const [selectedDate, setSelectedDate] = useState('')
+    const [selectedDate, setSelectedDate] = useState(getDateToday())
 
     const APIURL = 'http://144.91.93.161:8004/api/desktop'
+
+    function getDateToday() {
+        const today = new Date();
+        const year = today.getFullYear().toString();
+        let month = (today.getMonth() + 1).toString();
+        let day = today.getDate().toString()
+
+        if (month.length === 1) {
+            month = "0" + month;
+        }
+
+        return year + '-' + month + '-' + day;
+    }
 
     useEffect(() => {
         const getUsers = async () => {
@@ -235,22 +248,18 @@ const Appointments = () => {
             message.error(`An error has occurred. Error Status: ${response.status}`);
         }
 
-        // let start = data.date + 'T' + data.time
-        // let duration = moment.duration(data.duration)
-        // let end = moment(data.date + 'T' + data.time).add(duration).format().split("+")[0]
-        // let patient = data.patient.first_name + ' ' + data.patient.last_name
-        //
-        // console.log(data.patient)
-        // console.log(patient)
+        let start = data.date + 'T' + data.time
+        let duration = moment.duration(data.duration)
+        let end = moment(data.date + 'T' + data.time).add(duration).format().split("+")[0]
 
-        // const newEvent = {
-        //     id: data.id,
-        //     title: `${values['patient'].label} (${values['doctor'].label})`,
-        //     start: start,
-        //     end: end
-        // }
-        //
-        // setEvents([...events, newEvent])
+        const newEvent = {
+            id: data.id,
+            title: `${values['patient'].label} (${values['doctor'].label})`,
+            start: start,
+            end: end
+        }
+
+        setEvents([...events, newEvent])
     }
 
     const handleEventClick = async (value) => {
