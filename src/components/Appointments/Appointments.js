@@ -15,10 +15,10 @@ const Appointments = () => {
     const [patients, setPatients] = useState([])
     const [patientOptions, setPatientOptions] = useState([])
     const [appointments, setAppointments] = useState([])
+    const [selectedDate, setSelectedDate] = useState(moment(getDateToday()))
     const [events, setEvents] = useState([])
     const [drawerState, setDrawerState] = useState(false)
     const [editDrawerState, setEditDrawerState] = useState(false)
-    const [selectedDate, setSelectedDate] = useState(getDateToday)
     const [editValues, setEditValues] = useState({})
     const [editID, setEditID] = useState('')
 
@@ -197,8 +197,8 @@ const Appointments = () => {
 
     const handleDateClick = (value) => {
         console.log('Selected Date:', value.dateStr)
-        setSelectedDate(value.dateStr)
-        console.log('selected date', selectedDate)
+        setSelectedDate(moment(value.dateStr))
+        console.log('selected date obj', selectedDate)
         openDrawer()
     }
 
@@ -370,13 +370,13 @@ const Appointments = () => {
                 doctorOptions={doctorOptions}
                 patients={patients}
                 patientOptions={patientOptions}
+                selectedDate={selectedDate}
                 appointments={appointments}
                 drawerState={drawerState}
                 editDrawerState={editDrawerState}
                 onAddAppointment={handleAddAppointment}
                 onEditAppointment={handleEditAppointment}
                 closeDrawer={closeDrawer}
-                selectedDate={selectedDate}
                 editValues={editValues}
             />
 

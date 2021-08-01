@@ -14,18 +14,18 @@ const AddAppointment = ({
                             closeDrawer,
                             editValues
                         }) => {
-    const [momentObj, setMomentObj] = useState({})
     const [existing, setExisting] = useState(true)
     const [form] = Form.useForm();
     const [editForm] = Form.useForm();
+    const [momentObj, setMomentObj] = useState({})
 
     useEffect(() => {
         const getUsers = async () => {
             console.log('the selected date: ', selectedDate)
-            setMomentObj(moment(selectedDate))
+            setMomentObj(selectedDate)
         }
         getUsers().then(r => console.log(r, 'Hello3'))
-    }, [])
+    }, [selectedDate, momentObj])
 
     const existingPatient = () => {
         setExisting(true)
