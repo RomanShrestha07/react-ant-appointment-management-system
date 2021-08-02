@@ -211,7 +211,7 @@ const Appointments = () => {
         console.log('Ini Selected Time:', selectedTime)
 
         const time = moment(value.dateStr).format('HH:mm:ss')
-        if (time === '00:00:00'){
+        if (time === '00:00:00') {
             console.log('time is 0')
             setSelectedTime(moment('00:00:00', 'HH:mm:ss'))
         } else {
@@ -387,6 +387,21 @@ const Appointments = () => {
         setSpinState(false)
     }
 
+    const handleDeleteAppointment = async () => {
+        console.log('Appointment ID to Delete:', editValues.id)
+        let ID = editValues.id
+
+        // await fetch(``, {
+        //     method: 'DELETE',
+        //     headers: {
+        //         'Content-type': 'application/json'
+        //     }
+        // })
+
+        closeDrawer()
+        setEvents(events.filter((event) => event.id !== ID))
+    }
+
     return (
         <Card title='All Appointments'>
             <Spin tip='Loading...' spinning={spinState} delay={500}>
@@ -436,6 +451,7 @@ const Appointments = () => {
                     onEditAppointment={handleEditAppointment}
                     closeDrawer={closeDrawer}
                     editValues={editValues}
+                    onDeleteAppointment={handleDeleteAppointment}
                 />
             </Spin>
         </Card>

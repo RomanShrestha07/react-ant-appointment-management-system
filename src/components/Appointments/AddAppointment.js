@@ -13,7 +13,8 @@ const AddAppointment = ({
                             onAddAppointment,
                             onEditAppointment,
                             closeDrawer,
-                            editValues
+                            editValues,
+                            onDeleteAppointment
                         }) => {
     const [existing, setExisting] = useState(true)
     const [form] = Form.useForm();
@@ -295,6 +296,9 @@ const AddAppointment = ({
                             <div style={{textAlign: 'right',}}>
                                 <Button onClick={closeDrawer} style={{marginRight: 8}}>
                                     Cancel
+                                </Button>
+                                <Button type='primary' danger onClick={onDeleteAppointment} style={{marginRight: 8}}>
+                                    Delete
                                 </Button>
                                 <Button htmlType="submit" type="primary">
                                     Edit Appointment
