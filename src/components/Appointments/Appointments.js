@@ -12,19 +12,25 @@ import Select from 'react-select'
 const Appointments = () => {
     const [doctors, setDoctors] = useState([])
     const [doctorOptions, setDoctorOptions] = useState([])
+
     const [patients, setPatients] = useState([])
     const [patientOptions, setPatientOptions] = useState([])
+
     const [appointments, setAppointments] = useState([])
-    const [selectedDate, setSelectedDate] = useState(moment(getDateToday()))
     const [events, setEvents] = useState([])
     const [allEvents, setAllEvents] = useState([])
+
+    const [selectedDate, setSelectedDate] = useState(moment(getDateToday()))
+    const [selectedTime, setSelectedTime] = useState(moment('00:00:00', 'HH:mm:ss'))
+
     const [drawerState, setDrawerState] = useState(false)
     const [editDrawerState, setEditDrawerState] = useState(false)
+
     const [editValues, setEditValues] = useState({})
     const [editID, setEditID] = useState('')
     const [spinState, setSpinState] = useState(false)
 
-    const APIURL = 'http://144.91.93.161:8004/api/desktop'
+    const apiURL = 'http://144.91.93.161:8004/api/desktop'
 
     useEffect(() => {
         const getEverything = async () => {
@@ -61,7 +67,7 @@ const Appointments = () => {
     }
 
     const fetchDoctors = async () => {
-        const response = await fetch(`${APIURL}/list-doctors/`, {
+        const response = await fetch(`${apiURL}/list-doctors/`, {
             method: 'GET',
             mode: 'cors',
             headers: {
@@ -74,7 +80,7 @@ const Appointments = () => {
     }
 
     const fetchDoctorOptions = async () => {
-        const response = await fetch(`${APIURL}/list-doctors/`, {
+        const response = await fetch(`${apiURL}/list-doctors/`, {
             method: 'GET',
             mode: 'cors',
             headers: {
@@ -93,7 +99,7 @@ const Appointments = () => {
     }
 
     const fetchPatients = async () => {
-        const response = await fetch(`${APIURL}/list-patients-preview/`, {
+        const response = await fetch(`${apiURL}/list-patients-preview/`, {
             method: 'GET',
             mode: 'cors',
             headers: {
@@ -106,7 +112,7 @@ const Appointments = () => {
     }
 
     const fetchPatientOptions = async () => {
-        const response = await fetch(`${APIURL}/list-patients-preview/`, {
+        const response = await fetch(`${apiURL}/list-patients-preview/`, {
             method: 'GET',
             mode: 'cors',
             headers: {
@@ -128,7 +134,7 @@ const Appointments = () => {
     }
 
     const fetchAppointments = async () => {
-        const response = await fetch(`${APIURL}/appointments/`, {
+        const response = await fetch(`${apiURL}/appointments/`, {
             method: 'GET',
             mode: 'cors',
             headers: {
@@ -162,7 +168,7 @@ const Appointments = () => {
     }
 
     const fetchEvents = async () => {
-        const response = await fetch(`${APIURL}/appointments/`, {
+        const response = await fetch(`${apiURL}/appointments/`, {
             method: 'GET',
             mode: 'cors',
             headers: {
@@ -202,9 +208,23 @@ const Appointments = () => {
     })
 
     const handleDateClick = (value) => {
-        console.log('Selected Date:', value.dateStr)
+        console.log('Ini Selected Time:', selectedTime)
+
+        const time = moment(value.dateStr).format('HH:mm:ss')
+        if (time === '00:00:00'){
+            console.log('time is 0')
+            setSelectedTime(moment('00:00:00', 'HH:mm:ss'))
+        } else {
+            console.log('the time is', time)
+            setSelectedTime(moment(time, 'HH:mm:ss'))
+        }
+
+        console.log('Ini Selected Date:', value.dateStr)
         setSelectedDate(moment(value.dateStr))
+
         console.log('selected date obj', selectedDate)
+        console.log('selected time obj', selectedTime)
+
         openDrawer()
     }
 
@@ -226,6 +246,12 @@ const Appointments = () => {
 
     const openDrawer = () => {
         setDrawerState(true)
+    }
+
+    const openDrawer2 = () => {
+        setDrawerState(true)
+        setSelectedDate(moment(getDateToday()))
+        setSelectedTime(moment('00:00:00', 'HH:mm:ss'))
     }
 
     const openEditDrawer = () => {
@@ -252,9 +278,9 @@ const Appointments = () => {
             remarks: values['remarks']
         }
 
-        // http://localhost:5000/appointments/ ${APIURL}/create-appointment/
+        // http://localhost:5000/appointments/ ${apiURL}/create-appointment/
 
-        const response = await fetch(`${APIURL}/create-appointment/`, {
+        const response = await fetch(`${apiURL}/create-appointment/`, {
             method: 'POST',
             headers: {
                 'Content-type': 'application/json'
@@ -276,6 +302,7 @@ const Appointments = () => {
         let start = data.date + 'T' + data.time
         let duration = moment.duration(data.duration)
         let end = moment(data.date + 'T' + data.time).add(duration).format().split("+")[0]
+        console.log(':::::', start, duration, end)
 
         const newEvent = {
             id: data.id,
@@ -292,7 +319,7 @@ const Appointments = () => {
         console.log('Appointment ID:', value.event._def.publicId)
         const ID = value.event._def.publicId
 
-        const response = await fetch(`${APIURL}/appointment/${ID}`, {
+        const response = await fetch(`${apiURL}/appointment/${ID}`, {
             method: 'GET',
             mode: 'cors',
             headers: {
@@ -320,7 +347,7 @@ const Appointments = () => {
 
         console.log('Edited Appointment:', editedAppointment)
 
-        const response = await fetch(`${APIURL}/appointment/${ID}`, {
+        const response = await fetch(`${apiURL}/appointment/${ID}`, {
             method: 'PATCH',
             mode: 'cors',
             headers: {
@@ -377,7 +404,7 @@ const Appointments = () => {
                         {
                             AddAppointmentButton: {
                                 text: 'Add Appointment',
-                                click: openDrawer
+                                click: openDrawer2
                             },
                         }
                     }
@@ -392,6 +419,7 @@ const Appointments = () => {
                     eventClick={handleEventClick}
                     dayMaxEvents={2}
                     navLinks={true}
+                    dayHeaderFormat={{weekday: 'long'}}
                 />
 
                 <AddAppointment
@@ -400,6 +428,7 @@ const Appointments = () => {
                     patients={patients}
                     patientOptions={patientOptions}
                     selectedDate={selectedDate}
+                    selectedTime={selectedTime}
                     appointments={appointments}
                     drawerState={drawerState}
                     editDrawerState={editDrawerState}

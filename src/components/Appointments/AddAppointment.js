@@ -7,6 +7,7 @@ const AddAppointment = ({
                             doctorOptions,
                             patientOptions,
                             selectedDate,
+                            selectedTime,
                             drawerState,
                             editDrawerState,
                             onAddAppointment,
@@ -18,13 +19,15 @@ const AddAppointment = ({
     const [form] = Form.useForm();
     const [editForm] = Form.useForm();
     const [momentObj, setMomentObj] = useState({})
+    const [momentTimeObj, setMomentTimeObj] = useState({})
 
     useEffect(() => {
         const getUsers = async () => {
             setMomentObj(selectedDate)
+            setMomentTimeObj(selectedTime)
         }
         getUsers().then(r => console.log(r, 'Hello3'))
-    }, [selectedDate, momentObj])
+    }, [selectedDate, selectedTime, momentObj])
 
     const existingPatient = () => {
         setExisting(true)
@@ -96,6 +99,7 @@ const AddAppointment = ({
 
     let initial = {
         date: momentObj,
+        time: momentTimeObj,
         duration: moment('00:15:00', 'HH:mm:ss')
     }
 
@@ -106,6 +110,14 @@ const AddAppointment = ({
 
     if (editValues.doctor) {
         console.log('rerere', editValues.duration)
+
+        let remarks;
+        if (editValues.remarks) {
+            remarks = editValues.remarks
+        } else {
+            remarks = ''
+        }
+
         editForm.setFieldsValue({
             doctor: {value: 1, label: `${editValues.doctor}`},
             patient: {
@@ -115,7 +127,7 @@ const AddAppointment = ({
             date: moment(`${editValues.date}`, 'YYYY-MM-DD'),
             time: moment(`${editValues.time}`, 'HH:mm'),
             duration: moment(`${editValues.duration}`, 'HH:mm:ss'),
-            remarks: `${editValues.remarks}`
+            remarks: `${remarks}`
         });
     }
 
