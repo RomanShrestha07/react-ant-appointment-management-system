@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react';
 import AddAppointment from "./AddAppointment";
-import {Card, Form, message} from 'antd'
+import {Card, Form, message, Spin} from 'antd'
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from "@fullcalendar/timegrid"
@@ -17,27 +17,32 @@ const Appointments = () => {
     const [appointments, setAppointments] = useState([])
     const [selectedDate, setSelectedDate] = useState(moment(getDateToday()))
     const [events, setEvents] = useState([])
+    const [allEvents, setAllEvents] = useState([])
     const [drawerState, setDrawerState] = useState(false)
     const [editDrawerState, setEditDrawerState] = useState(false)
     const [editValues, setEditValues] = useState({})
     const [editID, setEditID] = useState('')
+    const [spinState, setSpinState] = useState(false)
 
     const APIURL = 'http://144.91.93.161:8004/api/desktop'
 
     useEffect(() => {
         const getEverything = async () => {
+            toggleSpinOn()
+            const appointmentsFromServer = await fetchAppointments()
+            const processedEvents = await fetchEvents()
             const doctorsFromServer = await fetchDoctors()
             const doctorOptionsFromServer = await fetchDoctorOptions()
             const patientsFromServer = await fetchPatients()
             const patientOptionsFromServer = await fetchPatientOptions()
-            const appointmentsFromServer = await fetchAppointments()
-            const processedEvents = await fetchEvents()
+            setAppointments(appointmentsFromServer)
+            setEvents(processedEvents)
+            toggleSpinOff()
+            setAllEvents(processedEvents)
             setDoctors(doctorsFromServer)
             setDoctorOptions(doctorOptionsFromServer)
             setPatients(patientsFromServer)
             setPatientOptions(patientOptionsFromServer)
-            setAppointments(appointmentsFromServer)
-            setEvents(processedEvents)
         }
         getEverything().then(r => console.log(r, 'Hello2'))
     }, [])
@@ -179,11 +184,12 @@ const Appointments = () => {
                     id: d.id,
                     title: `${patient} (${d.doctor})`,
                     start: start,
-                    end: end
+                    end: end,
+                    doctor: d.doctor
                 }
             )
         })
-        console.log('all events:', all_events)
+        console.log('The Events:', all_events)
         return all_events
     }
 
@@ -202,8 +208,20 @@ const Appointments = () => {
         openDrawer()
     }
 
-    const filterByDoctor = (value) => {
-        console.log('Doctor: ', value)
+    const filterByDoctor = async (data) => {
+        console.log('all events', allEvents)
+
+        console.log('Doctor: ', data)
+        console.log('Doctor Name: ', data.label)
+        console.log('Doctor ID: ', data.value)
+
+        if (data.label === 'All') {
+            setEvents(allEvents)
+        } else {
+            setEvents(
+                allEvents.filter((event) => event.doctor === data.label)
+            )
+        }
     }
 
     const openDrawer = () => {
@@ -263,7 +281,8 @@ const Appointments = () => {
             id: data.id,
             title: `${values['patient'].label} (${values['doctor'].label})`,
             start: start,
-            end: end
+            end: end,
+            doctor: values['doctor'].label
         }
 
         setEvents([...events, newEvent])
@@ -333,53 +352,63 @@ const Appointments = () => {
         setEditID('')
     }
 
+    const toggleSpinOn = () => {
+        setSpinState(true)
+    }
+
+    const toggleSpinOff = () => {
+        setSpinState(false)
+    }
+
     return (
         <Card title='All Appointments'>
-            <Form wrapperCol={{span: 8,}}>
-                <Form.Item name="filter_doctor">
-                    <Select options={doctor_options} onChange={filterByDoctor} placeholder='Filter by Doctor'/>
-                </Form.Item>
-            </Form>
+            <Spin tip='Loading...' spinning={spinState} delay={500}>
+                <Form wrapperCol={{span: 8,}}>
+                    <Form.Item name="filter_doctor">
+                        <Select options={doctor_options} menuPlacement='top' onChange={filterByDoctor}
+                                placeholder='Filter by Doctor'/>
+                    </Form.Item>
+                </Form>
 
-            <FullCalendar
-                plugins={[dayGridPlugin, interactionPlugin, timeGridPlugin, listPlugin]}
-                initialView="dayGridMonth"
-                customButtons={
-                    {
-                        AddAppointmentButton: {
-                            text: 'Add Appointment',
-                            click: openDrawer
-                        },
+                <FullCalendar
+                    plugins={[dayGridPlugin, interactionPlugin, timeGridPlugin, listPlugin]}
+                    initialView="dayGridMonth"
+                    customButtons={
+                        {
+                            AddAppointmentButton: {
+                                text: 'Add Appointment',
+                                click: openDrawer
+                            },
+                        }
                     }
-                }
-                headerToolbar={{
-                    left: 'prev,next today AddAppointmentButton',
-                    center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
-                }}
-                selectable={true}
-                dateClick={handleDateClick}
-                events={events}
-                eventClick={handleEventClick}
-                dayMaxEvents={2}
-                navLinks={true}
-            />
+                    headerToolbar={{
+                        left: 'prev,next today AddAppointmentButton',
+                        center: 'title',
+                        right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+                    }}
+                    selectable={true}
+                    dateClick={handleDateClick}
+                    events={events}
+                    eventClick={handleEventClick}
+                    dayMaxEvents={2}
+                    navLinks={true}
+                />
 
-            <AddAppointment
-                doctors={doctors}
-                doctorOptions={doctorOptions}
-                patients={patients}
-                patientOptions={patientOptions}
-                selectedDate={selectedDate}
-                appointments={appointments}
-                drawerState={drawerState}
-                editDrawerState={editDrawerState}
-                onAddAppointment={handleAddAppointment}
-                onEditAppointment={handleEditAppointment}
-                closeDrawer={closeDrawer}
-                editValues={editValues}
-            />
-
+                <AddAppointment
+                    doctors={doctors}
+                    doctorOptions={doctorOptions}
+                    patients={patients}
+                    patientOptions={patientOptions}
+                    selectedDate={selectedDate}
+                    appointments={appointments}
+                    drawerState={drawerState}
+                    editDrawerState={editDrawerState}
+                    onAddAppointment={handleAddAppointment}
+                    onEditAppointment={handleEditAppointment}
+                    closeDrawer={closeDrawer}
+                    editValues={editValues}
+                />
+            </Spin>
         </Card>
     );
 };

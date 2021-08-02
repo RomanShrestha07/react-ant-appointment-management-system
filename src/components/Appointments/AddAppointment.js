@@ -21,7 +21,7 @@ const AddAppointment = ({
 
     useEffect(() => {
         const getUsers = async () => {
-            console.log('the selected date: ', selectedDate)
+            // console.log('the selected date: ', selectedDate)
             setMomentObj(selectedDate)
         }
         getUsers().then(r => console.log(r, 'Hello3'))
@@ -108,6 +108,7 @@ const AddAppointment = ({
     }
 
     if (editValues.doctor) {
+        console.log('rerere',editValues.duration)
         editForm.setFieldsValue({
             doctor: {value: 1, label: `${editValues.doctor}`},
             patient: {
