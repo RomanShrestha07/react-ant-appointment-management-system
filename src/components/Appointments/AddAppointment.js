@@ -21,7 +21,6 @@ const AddAppointment = ({
 
     useEffect(() => {
         const getUsers = async () => {
-            // console.log('the selected date: ', selectedDate)
             setMomentObj(selectedDate)
         }
         getUsers().then(r => console.log(r, 'Hello3'))
@@ -97,10 +96,8 @@ const AddAppointment = ({
 
     let initial = {
         date: momentObj,
-        duration: moment('15:00', 'HH:mm')
+        duration: moment('00:15:00', 'HH:mm:ss')
     }
-
-    // console.log('initial', momentObj)
 
     if (drawerState === false) {
         form.resetFields()
@@ -108,7 +105,7 @@ const AddAppointment = ({
     }
 
     if (editValues.doctor) {
-        console.log('rerere',editValues.duration)
+        console.log('rerere', editValues.duration)
         editForm.setFieldsValue({
             doctor: {value: 1, label: `${editValues.doctor}`},
             patient: {
@@ -117,7 +114,7 @@ const AddAppointment = ({
             },
             date: moment(`${editValues.date}`, 'YYYY-MM-DD'),
             time: moment(`${editValues.time}`, 'HH:mm'),
-            duration: moment(`${editValues.duration}`, 'HH:mm'),
+            duration: moment(`${editValues.duration}`, 'HH:mm:ss'),
             remarks: `${editValues.remarks}`
         });
     }
@@ -179,7 +176,7 @@ const AddAppointment = ({
                         <Col span={8}>
                             <Form.Item name="duration" label="Duration"
                                        rules={[{required: true, message: 'Please set the duration'}]}>
-                                <TimePicker format='HH:mm' style={{width: '100%'}}/>
+                                <TimePicker format='HH:mm:ss' style={{width: '100%'}}/>
                             </Form.Item>
                         </Col>
                     </Row>
@@ -266,7 +263,7 @@ const AddAppointment = ({
                         <Col span={8}>
                             <Form.Item name="duration" label="Duration"
                                        rules={[{required: true, message: 'Please set the duration'}]}>
-                                <TimePicker format='HH:mm' style={{width: '100%'}}/>
+                                <TimePicker format='HH:mm:ss' style={{width: '100%'}}/>
                             </Form.Item>
                         </Col>
                     </Row>

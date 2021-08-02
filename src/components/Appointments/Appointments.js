@@ -241,12 +241,12 @@ const Appointments = () => {
         console.log('Appointment Added:', values)
         console.log('Appointment Date:', values['date'].format('YYYY-MM-DD'))
         console.log('Appointment Time:', values['time'].format('HH:mm'))
-        console.log('Appointment Duration:', values['duration'].format('HH:mm'))
+        console.log('Appointment Duration:', values['duration'].format('HH:mm:ss'))
 
         const newAppointment = {
             date: values['date'].format('YYYY-MM-DD'),
             time: values['time'].format('HH:mm'),
-            duration: values['duration'].format('HH:mm'),
+            duration: values['duration'].format('HH:mm:ss'),
             patient: values['patient'].value,
             doctor: values['doctor'].value,
             remarks: values['remarks']
@@ -314,7 +314,7 @@ const Appointments = () => {
             id: editID,
             date: values['date'].format('YYYY-MM-DD'),
             time: values['time'].format('HH:mm'),
-            duration: values['duration'].format('HH:mm'),
+            duration: values['duration'].format('HH:mm:ss'),
             remarks: values['remarks']
         }
 
